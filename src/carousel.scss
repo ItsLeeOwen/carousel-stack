@@ -1,0 +1,60 @@
+// required for hover transition
+$ilo-carousel-depth: 10px !default;
+$ilo-carousel-perspective: 40px !default;
+$ilo-carousel-item-width: 0px !default;
+
+.ilo-carousel {
+  white-space: nowrap;
+  perspective: $ilo-carousel-perspective;
+  perspective-origin: left center;
+  overflow: hidden;
+
+  &:not(.ilo-carousel--animating) {
+    .ilo-carousel__item {
+      @for $i from 1 through 20 {
+        &:nth-child(#{$i}) {
+          &:hover,
+          &:focus {
+            &:not(.active):not(:active) {
+              .ilo-carousel__content {
+                $j: 20 - $i;
+
+                @if $i > 1 {
+                  transition-delay: 250ms;
+                  $z: ($i - 1) * $ilo-carousel-depth;
+                  $scale: (($z * -1) / $ilo-carousel-perspective) - 1;
+                  $scaledWidth: $ilo-carousel-item-width / $scale;
+                  $translateX: ($scale + 1) * ($scaledWidth);
+                  transform: translateX($translateX);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .ilo-carousel__item {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    outline: none;
+  }
+
+  .ilo-carousel__content {
+    transition: inherit;
+    width: inherit;
+    height: inherit;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+  }
+
+  &--rendering {
+    .ilo-carousel__item {
+      transition-duration: 0ms !important;
+      transition: none !important;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "carousel-stack",
+  "version": "1.0.1",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node_modules/.bin/webpack",
+    "start": "node_modules/.bin/webpack-dev-server"
+  },
+  "webpack": {
+    "mode": "production",
+    "entry": {
+      "index.html": "./src/demo.html",
+      "index.js": "./src/demo.js",
+      "carousel.js": "./src/carousel.js"
+    },
+    "output": {
+      "filename": "[name]"
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jss": "^9.8.7",
+    "jss-preset-default": "^10.0.0-alpha.7",
+    "webpack-config-starter": "0.0.28"
+  }
+}

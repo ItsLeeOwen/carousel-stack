@@ -15,24 +15,24 @@ const KEYBOARD_ENTER = 13
 const KEYBOARD_SPACE = 32
 
 export default function Carousel({
-  carousel,
   content,
   contentHeight,
   contentWidth,
   depth = 10,
   ease = "cubic-bezier(0.23, 1, 0.32, 1)",
+  element,
   onSelect,
   speed = 750,
 }) {
-  if (!carousel) {
-    throw new Error("carousel.js opts.carousel is required")
+  if (!element) {
+    throw new Error("carousel.js opts.element is required")
   }
   if (!contentWidth) {
     throw new Error("carousel.js opts.contentWidth is required")
   }
 
   // add carousel class and rendering class to prevent initial transition
-  carousel.classList.add(CLASS_CAROUSEL, CLASS_CAROUSEL_RENDERING)
+  element.classList.add(CLASS_CAROUSEL, CLASS_CAROUSEL_RENDERING)
 
   const styles = {
     iloCarouselItem: {
@@ -56,7 +56,7 @@ export default function Carousel({
   setTimeout(() => {
     render()
     reflow()
-    carousel.classList.remove(CLASS_CAROUSEL_RENDERING)
+    element.classList.remove(CLASS_CAROUSEL_RENDERING)
 
     addKeyboardEvents()
   })
@@ -87,17 +87,17 @@ export default function Carousel({
       if (!item.element) {
         // adding item for the first time
         item.enter = true
-        const element = document.createElement("div")
-        element.classList.add(classes.iloCarouselItem)
-        element.classList.add(CLASS_CAROUSEL_ITEM)
+        const itemElement = document.createElement("div")
+        itemElement.classList.add(classes.iloCarouselItem)
+        itemElement.classList.add(CLASS_CAROUSEL_ITEM)
         item.content.element.classList.add(CLASS_CAROUSEL_CONTENT)
-        element.appendChild(item.content.element)
+        itemElement.appendChild(item.content.element)
 
         item.onClick = event => onClick(items.indexOf(item))
-        element.addEventListener("click", item.onClick)
-        item.element = element
+        itemElement.addEventListener("click", item.onClick)
+        item.element = itemElement
 
-        carousel.appendChild(item.element)
+        element.appendChild(item.element)
       } else if (!item.element.parentNode) {
         // re-adding a pushed item
         item.enter = true
@@ -105,11 +105,11 @@ export default function Carousel({
         item.element.addEventListener("click", item.onClick)
         const n = i + 1
         if (n === l) {
-          carousel.appendChild(item.element)
+          element.appendChild(item.element)
         } else if (items[n].element.parentNode) {
-          carousel.insertBefore(item.element, items[n].element)
+          element.insertBefore(item.element, items[n].element)
         } else {
-          carousel.appendChild(item.element)
+          element.appendChild(item.element)
         }
       }
 
@@ -145,7 +145,7 @@ export default function Carousel({
 
   function previous() {
     const popped = items.pop()
-    carousel.removeChild(popped.element)
+    element.removeChild(popped.element)
 
     if (goToTimer) {
       // cancel previous timeout
@@ -158,14 +158,14 @@ export default function Carousel({
     }
 
     // prevent hover interactions while animating
-    carousel.classList.add(CLASS_CAROUSEL_ANIMATING)
+    element.classList.add(CLASS_CAROUSEL_ANIMATING)
 
     items.unshift({
       ...popped,
       element: popped.element.cloneNode(true),
     })
 
-    carousel.classList.add(CLASS_CAROUSEL_RENDERING)
+    element.classList.add(CLASS_CAROUSEL_RENDERING)
     reflow()
 
     activeIndex = 1
@@ -175,7 +175,7 @@ export default function Carousel({
 
     activeIndex = 0
 
-    carousel.classList.remove(CLASS_CAROUSEL_RENDERING)
+    element.classList.remove(CLASS_CAROUSEL_RENDERING)
 
     render()
   }
@@ -193,7 +193,7 @@ export default function Carousel({
     }
 
     // prevent hover interactions while animating
-    carousel.classList.add(CLASS_CAROUSEL_ANIMATING)
+    element.classList.add(CLASS_CAROUSEL_ANIMATING)
 
     const pushing = items.slice(activeIndex, index).map(item => ({
       ...item,
@@ -208,13 +208,13 @@ export default function Carousel({
 
     goToComplete = () => {
       goToTimer = undefined
-      carousel.classList.add(CLASS_CAROUSEL_RENDERING)
+      element.classList.add(CLASS_CAROUSEL_RENDERING)
       activeIndex = 0
-      items.splice(0, index).forEach(item => carousel.removeChild(item.element))
+      items.splice(0, index).forEach(item => element.removeChild(item.element))
       render()
       reflow()
-      carousel.classList.remove(CLASS_CAROUSEL_RENDERING)
-      carousel.classList.remove(CLASS_CAROUSEL_ANIMATING)
+      element.classList.remove(CLASS_CAROUSEL_RENDERING)
+      element.classList.remove(CLASS_CAROUSEL_ANIMATING)
     }
 
     goToTimer = setTimeout(goToComplete, speed)
@@ -236,12 +236,12 @@ export default function Carousel({
           case KEYBOARD_ENTER:
           case KEYBOARD_SPACE:
             event.preventDefault()
-            const element = document.activeElement
+            const activeElement = document.activeElement
             if (
-              element.classList.contains(CLASS_CAROUSEL_ITEM) &&
-              element.parentNode === carousel
+              activeElement.classList.contains(CLASS_CAROUSEL_ITEM) &&
+              activeElement.parentNode === element
             ) {
-              const tabIndex = element.getAttribute("tabindex")
+              const tabIndex = activeElement.getAttribute("tabindex")
               goTo(Number(tabIndex) - 1)
             }
             break

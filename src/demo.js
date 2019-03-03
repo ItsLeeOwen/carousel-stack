@@ -2,7 +2,7 @@ import Carousel from "./carousel"
 import "./demo.scss"
 
 document.addEventListener("DOMContentLoaded", () => {
-  const carousel = document.querySelector(".my-carousel")
+  const element = document.querySelector(".my-carousel")
 
   const content = [
     { image: "asset/poster/terminator.jpg", name: "terminator" },
@@ -24,8 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 
-  new Carousel({
-    carousel,
+  const carousel = new Carousel({
+    element,
     content,
     contentHeight: 550,
     contentWidth: 365,
@@ -33,4 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("onSelect", selected)
     },
   })
+
+  window.onClickPrevious = () => carousel.previous()
+  window.onClickNext = () => carousel.next()
+  window.onClickNav = index => carousel.goTo(index)
 })

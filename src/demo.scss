@@ -1,1 +1,10 @@
 @import "./carousel";
+
+i {
+  display: inline-block;
+  padding: 6px;
+  margin: 5px;
+  cursor: pointer;
+  border: 1px solid lightblue;
+  user-select: none;
+}

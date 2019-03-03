@@ -126,7 +126,8 @@ export default function Carousel({
     reflow()
 
     // set positions to transition to
-    items.forEach((item, i) => {
+    items.forEach(item => {
+      item.enter = false
       const translateX = `translateX(${item.x}px)`
       const translateZ = `translateZ(${item.z}px)`
 
@@ -136,11 +137,11 @@ export default function Carousel({
 
   // on item click
   function onClick(index) {
-    goTo(index)
+    goTo(index, false)
   }
 
   function next() {
-    goTo(activeIndex + 1)
+    goTo(activeIndex + 1, false)
   }
 
   function previous() {
@@ -180,10 +181,13 @@ export default function Carousel({
     render()
   }
 
-  function goTo(index) {
+  function goTo(index, skipCompletion = true) {
     if (goToTimer) {
       // cancel previous timeout
       clearTimeout(goToTimer)
+      if (skipCompletion) {
+        goToComplete()
+      }
     }
 
     const item = items[index]
